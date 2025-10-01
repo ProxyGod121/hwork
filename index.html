@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>homework tracker</title>
+</head>
+<body>
+    <!-- Add this h2 element to your HTML body -->
+    <h2 id="completedMessage" class="completed-message">You completed all your homework!</h2>
+    
+
+    <center>
+        <h1 id="h1">Complete homework</h1>
+        <h3>Made by Mason Powers</h3>
+    </center>
+    <div id="wrapper">
+        <div id="contain">
+            <!-- Initial checkboxes -->
+            <div class="check" id="check-la">
+                <input type="checkbox" id="la" name="fruit" value="la">
+                <span class="checkmark" onclick="document.getElementById('la').click()"></span>
+                <span class="check-label-text">la</span>
+                <button class="remove-button" onclick="removeCheckbox('check-la')">Remove</button>
+            </div>
+            <div class="check" id="check-math">
+                <input type="checkbox" id="math" name="fruit" value="math">
+                <span class="checkmark" onclick="document.getElementById('math').click()"></span>
+                <span class="check-label-text">math</span>
+                <button class="remove-button" onclick="removeCheckbox('check-math')">Remove</button>
+            </div>
+            <div class="check" id="check-history">
+                <input type="checkbox" id="history" name="fruit" value="history">
+                <span class="checkmark" onclick="document.getElementById('history').click()"></span>
+                <span class="check-label-text">history</span>
+                <button class="remove-button" onclick="removeCheckbox('check-history')">Remove</button>
+            </div>
+            <div class="check" id="check-science">
+                <input type="checkbox" id="science" name="fruit" value="science">
+                <span class="checkmark" onclick="document.getElementById('science').click()"></span>
+                <span class="check-label-text">science</span>
+                <button class="remove-button" onclick="removeCheckbox('check-science')">Remove</button>
+            </div>
+            <div class="check" id="check-spanish">
+                <input type="checkbox" id="spanish" name="fruit" value="spanish">
+                <span class="checkmark" onclick="document.getElementById('spanish').click()"></span>
+                <span class="check-label-text">spanish</span>
+                <button class="remove-button" onclick="removeCheckbox('check-spanish')">Remove</button>
+            </div>
+            <div class="check" id="check-cs">
+                <input type="checkbox" id="cs" name="fruit" value="cs">
+                <span class="checkmark" onclick="document.getElementById('cs').click()"></span>
+                <span class="check-label-text">cs</span>
+                <button class="remove-button" onclick="removeCheckbox('check-cs')">Remove</button>
+            </div>
+            <div class="check" id="check-engin">
+                <input type="checkbox" id="engin" name="fruit" value="engin">
+                <span class="checkmark" onclick="document.getElementById('engin').click()"></span>
+                <span class="check-label-text">enginering</span>
+                <button class="remove-button" onclick="removeCheckbox('check-engin')">Remove</button>
+            </div>
+        </div>
+        <div class="add-input-container">
+            <input type="text" id="newCheckboxText" placeholder="Enter new item">
+            <button class="add-button" onclick="addCheckbox()">Add Checkbox</button>
+        </div>
+        <div>
+            <button class="reset-button" onclick="resetCheckboxes()">Reset</button>
+        </div>
+    </div>
+    <script src="scripts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <script src="complete.js"></script>
+</body>
+</html>
