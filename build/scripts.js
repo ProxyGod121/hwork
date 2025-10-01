@@ -1,23 +1,7 @@
-// Function to initialize Firebase
-function initFirebase() {
-  // Replace with your project's Firebase configuration
-  const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    projectId: "YOUR_PROJECT_ID"
-    // ... other properties
-  };
-  firebase.initializeApp(firebaseConfig);
-}
+// Function to initialize Firebase -- removed, not needed without auth
 
-// Save the current state of checkboxes to Firestore
+// Save the current state of checkboxes to LocalStorage
 function saveCheckboxes() {
-  const user = firebase.auth().currentUser;
-  if (!user) {
-    console.log("No user signed in. Data not saved.");
-    return;
-  }
-  
   const checkboxes = [];
   document.querySelectorAll('#contain .check').forEach(item => {
     const input = item.querySelector('input[type="checkbox"]');
@@ -29,38 +13,11 @@ function saveCheckboxes() {
       checked: input.checked
     });
   });
-  
-  // Save to a document in Firestore named after the user's ID
-  const db = firebase.firestore();
-  db.collection("users").doc(user.uid).set({ checkboxes })
-    .then(() => console.log("Checkboxes successfully saved!"))
-    .catch((error) => console.error("Error writing document: ", error));
+  localStorage.setItem('homeworkCheckboxes', JSON.stringify(checkboxes));
 }
 
-// Load checkboxes from Firestore
+// Load checkboxes from LocalStorage
 function loadCheckboxes() {
-  const user = firebase.auth().currentUser;
-  if (!user) {
-    // If no user is signed in, load from LocalStorage as a fallback
-    loadFromLocalStorage();
-    return;
-  }
-  
-  const db = firebase.firestore();
-  db.collection("users").doc(user.uid).get()
-    .then((doc) => {
-      if (doc.exists) {
-        const checkboxesData = doc.data().checkboxes;
-        renderCheckboxes(checkboxesData);
-      } else {
-        console.log("No saved data found for user.");
-        // Fallback to initial state or LocalStorage
-      }
-    })
-    .catch((error) => console.error("Error getting document:", error));
-}
-
-function loadFromLocalStorage() {
   const savedCheckboxes = localStorage.getItem('homeworkCheckboxes');
   if (savedCheckboxes) {
     renderCheckboxes(JSON.parse(savedCheckboxes));
@@ -125,45 +82,13 @@ function removeCheckbox(checkboxId) {
 // Function to reset checkboxes
 function resetCheckboxes() {
   localStorage.removeItem('homeworkCheckboxes');
-  const user = firebase.auth().currentUser;
-  if (user) {
-    const db = firebase.firestore();
-    db.collection("users").doc(user.uid).delete()
-      .then(() => console.log("User data successfully deleted!"))
-      .catch((error) => console.error("Error removing document: ", error));
-  }
   location.reload();
 }
 
-// Set up Google Sign-in/Sign-out functionality
-function setupAuth() {
-  firebase.auth().onAuthStateChanged(user => {
-    if (user) {
-      document.getElementById('auth-button').textContent = "Sign Out";
-      document.getElementById('auth-status').textContent = `Signed in as: ${user.displayName}`;
-      loadCheckboxes(); // Load user-specific data on sign-in
-    } else {
-      document.getElementById('auth-button').textContent = "Sign in with Google";
-      document.getElementById('auth-status').textContent = "Not signed in";
-      loadCheckboxes(); // Load from LocalStorage as fallback
-    }
-  });
-
-  document.getElementById('auth-button').addEventListener('click', () => {
-    if (firebase.auth().currentUser) {
-      firebase.auth().signOut();
-    } else {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      firebase.auth().signInWithPopup(provider);
-    }
-  });
-}
-
-// Initialize Firebase and set up event listeners
+// Initialize and set up event listeners
 document.addEventListener('DOMContentLoaded', () => {
-  initFirebase();
-  setupAuth();
-  // Ensure save is called on changes even before a sign-in event
+  loadCheckboxes();
+  // Ensure save is called on changes for initial checkboxes
   document.querySelectorAll('#contain .check input[type="checkbox"]').forEach(input => {
     input.addEventListener('change', saveCheckboxes);
   });
