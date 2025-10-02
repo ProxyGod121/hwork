@@ -1,6 +1,24 @@
-// Function to initialize Firebase -- removed, not needed without auth
+// Helper functions for cookies
+function setCookie(name, value, days = 365) {
+  const expires = new Date(Date.now() + days*24*60*60*1000).toUTCString();
+  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
+}
 
-// Save the current state of checkboxes to LocalStorage
+function getCookie(name) {
+  const cookies = document.cookie.split(";").map(c => c.trim());
+  for (const cookie of cookies) {
+    if (cookie.startsWith(name + "=")) {
+      return decodeURIComponent(cookie.substring(name.length + 1));
+    }
+  }
+  return null;
+}
+
+function deleteCookie(name) {
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+}
+
+// Save the current state of checkboxes to cookie
 function saveCheckboxes() {
   const checkboxes = [];
   document.querySelectorAll('#contain .check').forEach(item => {
@@ -13,14 +31,19 @@ function saveCheckboxes() {
       checked: input.checked
     });
   });
-  localStorage.setItem('homeworkCheckboxes', JSON.stringify(checkboxes));
+  setCookie('homeworkCheckboxes', JSON.stringify(checkboxes));
 }
 
-// Load checkboxes from LocalStorage
+// Load checkboxes from cookie
 function loadCheckboxes() {
-  const savedCheckboxes = localStorage.getItem('homeworkCheckboxes');
+  const savedCheckboxes = getCookie('homeworkCheckboxes');
   if (savedCheckboxes) {
-    renderCheckboxes(JSON.parse(savedCheckboxes));
+    try {
+      renderCheckboxes(JSON.parse(savedCheckboxes));
+    } catch (e) {
+      // fallback: clear cookie
+      deleteCookie('homeworkCheckboxes');
+    }
   } else {
     // If no saved data, ensure initial checkboxes also have listeners
     document.querySelectorAll('#contain .check input[type="checkbox"]').forEach(input => {
@@ -81,7 +104,7 @@ function removeCheckbox(checkboxId) {
 
 // Function to reset checkboxes
 function resetCheckboxes() {
-  localStorage.removeItem('homeworkCheckboxes');
+  deleteCookie('homeworkCheckboxes');
   location.reload();
 }
 
